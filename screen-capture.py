@@ -1,4 +1,4 @@
-import PIL.ImageGrab, datetime, time, configparser, os
+import PIL.ImageGrab, datetime, time, configparser, os, shutil
 
 dir_path = os.path.dirname(os.path.realpath(__file__))
 config = configparser.ConfigParser()
@@ -11,16 +11,19 @@ while(True):
 	ts = time.time()
 	st = datetime.datetime.fromtimestamp(ts).strftime('%Y%m%d_%H%M%S_%f')
 
+	filename_analyze_save = "capture_save.jpg"
 	filename_analyze = "capture.jpg"
 	filename_storage = str(st) +".jpg"
 	snapshot = PIL.ImageGrab.grab()
 
-	snapshot.save(dir_path +"/capture/" + filename_analyze)
+	snapshot.save(dir_path +"/capture/" + filename_analyze_save )
 
 	if(storage == True):
 		snapshot.save(dir_path +"/storage/" + filename_storage)
 
 	print("analyze screenshot by name: ", filename_analyze)
+
+	shutil.move(dir_path +"/capture/" + filename_analyze_save , dir_path +"/capture/" + filename_analyze)
 
 	if(storage == True):
 		print("storage screenshot by name: ", filename_storage)
