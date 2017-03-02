@@ -1,4 +1,4 @@
-import os, configparser, time, philips
+import PIL.ImageGrab, datetime, time, configparser, os, shutil, philips
 from PIL import Image
 from pathlib import Path
 from shutil import copyfile
@@ -7,8 +7,15 @@ dir_path = os.path.dirname(os.path.realpath(__file__))
 config = configparser.ConfigParser()
 config.read(dir_path +'/config.ini')
 
+storage = True if config['capture']['storage_file'] == '1' else False
+sleep_time = float(config['capture']['sleep_time'])
+
 cil_x = 0
 cil_y = 0
+
+tmp_cil_x = 0
+tmp_cil_y = 0
+
 def calc_images_colors():
     global dir_path, cil_y, cil_x
 
@@ -55,10 +62,27 @@ def calc_images_colors():
 
 
 
-tmp_cil_x = 0
-tmp_cil_y = 0
-
 while(True):
+    ts = time.time()
+    st = datetime.datetime.fromtimestamp(ts).strftime('%Y%m%d_%H%M%S_%f')
+
+    filename_analyze_save = "capture_save.jpg"
+    filename_analyze = "capture.jpg"
+    filename_storage = str(st) +".jpg"
+    snapshot = PIL.ImageGrab.grab()
+
+    snapshot.save(dir_path +"/capture/" + filename_analyze_save )
+
+    if(storage == True):
+        snapshot.save(dir_path +"/storage/" + filename_storage)
+
+    print("analyze screenshot by name: ", filename_analyze)
+
+    shutil.move(dir_path +"/capture/" + filename_analyze_save , dir_path +"/capture/" + filename_analyze)
+
+    if(storage == True):
+        print("storage screenshot by name: ", filename_storage)
+
     calc_images_colors()
 
     if(tmp_cil_x != cil_x or tmp_cil_y != cil_y):
@@ -74,5 +98,4 @@ while(True):
 
         print(philips_hue.data)
 
-
-    time.sleep(0.5)
+    time.sleep(sleep_time)

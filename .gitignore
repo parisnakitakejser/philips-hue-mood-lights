@@ -1,0 +1,4 @@
+.DS_Store
+*.pyc
+/capture/capture_tmp.jpg
+/capture/capture.jpg
