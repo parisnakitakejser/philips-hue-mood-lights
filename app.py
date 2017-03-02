@@ -1,4 +1,4 @@
-import PIL.ImageGrab, datetime, time, configparser, os, shutil, philips
+import sys, PIL.ImageGrab, datetime, time, configparser, os, shutil, philips
 from PIL import Image
 from pathlib import Path
 from shutil import copyfile
@@ -9,6 +9,8 @@ config.read(dir_path +'/config.ini')
 
 storage = True if config['capture']['storage_file'] == '1' else False
 sleep_time = float(config['capture']['sleep_time'])
+
+
 
 cil_x = 0
 cil_y = 0
@@ -24,8 +26,6 @@ def calc_images_colors():
         copyfile(dir_path + "/capture/capture.jpg", dir_path + "/capture/capture_tmp.jpg")
         im = Image.open(dir_path + "/capture/capture_tmp.jpg")
         pix = im.load()
-
-
 
         """ Sample pixel pick points to capture-sample.jpg
         photo_pick_point = [2450,549] # Yellow
@@ -85,7 +85,7 @@ while(True):
 
     screenshot()
     calc_images_colors()
-    
+
     if(tmp_cil_x != cil_x or tmp_cil_y != cil_y):
         tmp_cil_x = cil_x
         tmp_cil_y = cil_y
@@ -94,8 +94,12 @@ while(True):
 
         print(philips_hue.findAllLights())
 
-        philips_hue.getLightData(int(config['philips.hue']['light_num']))
-        philips_hue.changeLightColor(int(config['philips.hue']['light_num']),[cil_x, cil_y])
+        lights = config['philips.hue']['light_num'].split(',')
+
+        print('')
+        for light in lights:
+            philips_hue.getLightData(int(light))
+            philips_hue.changeLightColor(int(light),[cil_x, cil_y])
 
         print(philips_hue.data)
 
