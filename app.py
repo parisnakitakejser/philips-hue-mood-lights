@@ -60,9 +60,7 @@ def calc_images_colors():
 
     os.remove(dir_path + "/capture/capture_tmp.jpg")
 
-
-
-while(True):
+def screenshot():
     ts = time.time()
     st = datetime.datetime.fromtimestamp(ts).strftime('%Y%m%d_%H%M%S_%f')
 
@@ -83,8 +81,11 @@ while(True):
     if(storage == True):
         print("storage screenshot by name: ", filename_storage)
 
-    calc_images_colors()
+while(True):
 
+    screenshot()
+    calc_images_colors()
+    
     if(tmp_cil_x != cil_x or tmp_cil_y != cil_y):
         tmp_cil_x = cil_x
         tmp_cil_y = cil_y
